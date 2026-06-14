@@ -318,12 +318,16 @@
   function toggle() { paused ? play() : pause(); }
 
   /* ---------- bediening (kiosk) ------------------------------------------ */
+  // Volledig scherm — met webkit-prefix zodat het ook op iPad/Safari werkt.
+  function fsElement() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
   function goFullscreen() {
     const el = document.documentElement;
-    if (document.fullscreenElement) {
-      if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-    } else if (el.requestFullscreen) {
-      el.requestFullscreen().catch(() => {});
+    if (fsElement()) {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen;
+      if (exit) { try { const r = exit.call(document); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+    } else {
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
+      if (req) { try { const r = req.call(el); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
     }
   }
   document.addEventListener("keydown", (e) => {
@@ -340,7 +344,7 @@
       goFullscreen();
       return;
     }
-    clickTimer = setTimeout(() => { clickTimer = null; toggle(); }, 260);
+    clickTimer = setTimeout(() => { clickTimer = null; toggle(); }, 320);
   });
 
   // cursor verbergen bij inactiviteit
