@@ -349,22 +349,31 @@
   });
 
   // Veeg-navigatie (touch): naar links = volgende dia, naar rechts = vorige dia.
-  let tStartX = null, tStartY = null;
-  stage.addEventListener("touchstart", (e) => {
-    if (e.touches.length !== 1) { tStartX = null; return; }
-    tStartX = e.touches[0].clientX; tStartY = e.touches[0].clientY; swiped = false;
+  // Op document (vangt de beweging ongeacht het aangeraakte element) + bijhouden
+  // van de laatste positie als fallback voor touchend.
+  let tStartX = null, tStartY = null, tLastX = 0, tLastY = 0;
+  document.addEventListener("touchstart", (e) => {
+    if (!e.touches || e.touches.length !== 1) { tStartX = null; return; }
+    tStartX = e.touches[0].clientX; tStartY = e.touches[0].clientY;
+    tLastX = tStartX; tLastY = tStartY; swiped = false;
   }, { passive: true });
-  stage.addEventListener("touchend", (e) => {
+  document.addEventListener("touchmove", (e) => {
+    if (tStartX === null || !e.touches || !e.touches[0]) return;
+    tLastX = e.touches[0].clientX; tLastY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener("touchend", (e) => {
     if (tStartX === null) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - tStartX, dy = t.clientY - tStartY;
+    let ex = tLastX, ey = tLastY;
+    if (e.changedTouches && e.changedTouches[0]) { ex = e.changedTouches[0].clientX; ey = e.changedTouches[0].clientY; }
+    const dx = ex - tStartX, dy = ey - tStartY;
     tStartX = null;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       swiped = true;                            // onderdruk de tik die hierna kan volgen
       if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
       if (dx < 0) next(); else prev();          // links = volgende, rechts = vorige
     }
   }, { passive: true });
+  document.addEventListener("touchcancel", () => { tStartX = null; }, { passive: true });
 
   // cursor verbergen bij inactiviteit
   let cursorTimer = null;

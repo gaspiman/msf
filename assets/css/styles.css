@@ -23,7 +23,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
+html, body { height: 100%; touch-action: none; overscroll-behavior: none; }
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--teal-900);
@@ -36,7 +36,7 @@ body {
 }
 img { display: block; max-width: 100%; }
 
-#app { position: fixed; inset: 0; overflow: hidden;
+#app { position: fixed; inset: 0; overflow: hidden; touch-action: none;
   background:
     radial-gradient(120% 95% at 75% 12%, #f5402f, transparent 55%),
     radial-gradient(130% 120% at 25% 108%, #6c0a10, transparent 62%),
@@ -56,7 +56,7 @@ img { display: block; max-width: 100%; }
 [data-globe="country"] #globe-layer { opacity: 1; transform: translateX(18%); }
 
 /* ---- dia's -------------------------------------------------------------- */
-#stage { position: absolute; inset: 0; z-index: 2; }
+#stage { position: absolute; inset: 0; z-index: 2; touch-action: none; }
 .slide {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
