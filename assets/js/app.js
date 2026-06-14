@@ -336,16 +336,35 @@
     else if (e.key === " ") { e.preventDefault(); toggle(); }
     else if (e.key === "Enter" || e.key.toLowerCase() === "f") { goFullscreen(); }
   });
-  // Eén klik = pauzeren / hervatten · dubbelklik = volledig scherm. (Ook: Enter/F, pijltjes navigeren.)
-  let clickTimer = null;
+  // Tik = pauze/hervat · dubbeltik = volledig scherm · swipe = navigeren · pijltjes/Enter/F.
+  let clickTimer = null, swiped = false;
   stage.addEventListener("click", () => {
-    if (clickTimer) {                 // tweede klik binnen het venster => dubbelklik
+    if (swiped) { swiped = false; return; }   // het was een veegbeweging, geen tik
+    if (clickTimer) {                          // tweede tik => dubbeltik
       clearTimeout(clickTimer); clickTimer = null;
       goFullscreen();
       return;
     }
     clickTimer = setTimeout(() => { clickTimer = null; toggle(); }, 320);
   });
+
+  // Veeg-navigatie (touch): naar links = volgende dia, naar rechts = vorige dia.
+  let tStartX = null, tStartY = null;
+  stage.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) { tStartX = null; return; }
+    tStartX = e.touches[0].clientX; tStartY = e.touches[0].clientY; swiped = false;
+  }, { passive: true });
+  stage.addEventListener("touchend", (e) => {
+    if (tStartX === null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - tStartX, dy = t.clientY - tStartY;
+    tStartX = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      swiped = true;                            // onderdruk de tik die hierna kan volgen
+      if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+      if (dx < 0) next(); else prev();          // links = volgende, rechts = vorige
+    }
+  }, { passive: true });
 
   // cursor verbergen bij inactiviteit
   let cursorTimer = null;
