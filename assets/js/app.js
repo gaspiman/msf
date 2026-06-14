@@ -332,8 +332,16 @@
     else if (e.key === " ") { e.preventDefault(); toggle(); }
     else if (e.key === "Enter" || e.key.toLowerCase() === "f") { goFullscreen(); }
   });
-  // Klik = pauzeren / hervatten. (Volledig scherm: toets "f". Navigeren: pijltjes.)
-  stage.addEventListener("click", () => { toggle(); });
+  // Eén klik = pauzeren / hervatten · dubbelklik = volledig scherm. (Ook: Enter/F, pijltjes navigeren.)
+  let clickTimer = null;
+  stage.addEventListener("click", () => {
+    if (clickTimer) {                 // tweede klik binnen het venster => dubbelklik
+      clearTimeout(clickTimer); clickTimer = null;
+      goFullscreen();
+      return;
+    }
+    clickTimer = setTimeout(() => { clickTimer = null; toggle(); }, 260);
+  });
 
   // cursor verbergen bij inactiviteit
   let cursorTimer = null;
