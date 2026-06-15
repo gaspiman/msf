@@ -11,8 +11,8 @@ window.CONFIG = {
      Vervang actionUrl door de échte link van jouw actie op
      kominactie.artsenzondergrenzen.nl — de QR-code wordt automatisch
      opnieuw gegenereerd op basis van deze link. */
-  actionUrl: "https://kominactie.artsenzondergrenzen.nl/",
-  actionUrlLabel: "kominactie.artsenzondergrenzen.nl",
+  actionUrl: "https://www.actiezondergrenzen.nl/fundraisers/neti",
+  actionUrlLabel: "actiezondergrenzen.nl/fundraisers/neti",
 
   campaignName: "Artsen zonder Grenzen",
   campaignSub: "Kom in actie voor Artsen zonder Grenzen",

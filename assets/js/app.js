@@ -171,7 +171,9 @@
         <div class="cta-right anim" style="--d:420ms">
           <div class="qr-card">
             <img class="qr-actie" src="${photo("logo-actie.png")}" alt="Kom in actie">
-            <div class="qr-holder" id="qr-holder"></div>
+            <div class="qr-holder" id="qr-holder">
+              <img src="${photo("adobe-express-qr-code.png")}" alt="QR code" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;">
+            </div>
             <p class="qr-scan">Scan &amp; doneer</p>
           </div>
           <p class="cta-url">${cfg.actionUrlLabel}</p>
@@ -274,7 +276,8 @@
   function onEnter(s) {
     setGlobe(s);
     if (s.type === "stats") s.node.querySelectorAll(".stat__num").forEach(countUp);
-    if (s.type === "cta") buildQR(cfg.actionUrl, 360);
+    // Use static QR code image instead of dynamically building one
+    // if (s.type === "cta") buildQR(cfg.actionUrl, 360);
   }
 
   function restartProgress(dur) {
